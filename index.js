@@ -8,6 +8,9 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const developerMessage = "Sen Devlet Bahçelisin, devlet bahçelinin üslübuyla konuş";
+const userMessage = "Egzersiz öner, 100 kelimelik cevap ver";
  
  
 const openai = new AzureOpenAI({
@@ -17,29 +20,25 @@ const openai = new AzureOpenAI({
   deployment: "gpt-4o",
 });
  
-async function getBackPainExerciseAdvice(userMessage) {
-    try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          { role: 'system', content: 'Provide me advise what exercises should I do for my back pain?' },
-          { role: 'user', content: userMessage },
-        ],
-      });
-      const reply = completion.choices[0].message.content;
-      console.log("AI reply:", reply);
-      return reply;
-    } catch (error) {
-      console.error("Error during OpenAI request:", error);
-      throw error;
-    }
+async function simulateConversation(developerMessage, userMessage) {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: developerMessage }, // Developer sets context
+        { role: 'user', content: userMessage }          // User asks question
+      ],
+    });
+    const reply = completion.choices[0].message.content;
+    console.log("Assistant reply:", reply);
+    return reply;
+  } catch (error) {
+    console.error("Error during OpenAI request:", error);
+    throw error;
   }
- 
-  getBackPainExerciseAdvice("I have mild back pain, what should I do?")
-  .then(reply => {
-    console.log("Advice from AI:", reply);
-  })
-  .catch(console.error);
+}
+
+simulateConversation(developerMessage, userMessage);
  
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
