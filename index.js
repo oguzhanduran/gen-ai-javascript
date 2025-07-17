@@ -17,26 +17,6 @@ const openai = new AzureOpenAI({
   deployment: "gpt-4o",
 });
  
-app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
- 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: 'Provide me advise what exercises should I do for my back pain?' },
-        { role: 'user', content: message },
-      ],
-    });
- 
-    const reply = completion.choices[0].message.content;
-    res.json({ reply });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Something went wrong!' });
-  }
-});
- 
 async function getBackPainExerciseAdvice(userMessage) {
     try {
       const completion = await openai.chat.completions.create({
